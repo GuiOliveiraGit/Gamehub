@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GameHub</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .login-section {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .login-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .input-field {
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+        min-width: 200px;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: linear-gradient(45deg, #4e9927, #95d3b8);
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: linear-gradient(45deg, #e63946, #d62828);
+        transform: translateY(-2px);
+      }
+
+      .welcome-message {
+        background: linear-gradient(45deg, #a8e6cf, #dcedc1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2d5016;
+      }
+
+      .section-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .games-grid,
+      .games-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .game-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e0e0e0;
+      }
+
+      .game-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      .game-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .game-description {
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+
+      .loading {
+        text-align: center;
+        color: white;
+        font-size: 1.2rem;
+        margin: 40px 0;
+      }
+
+      .error-message {
+        background: #ffe6e6;
+        color: #d63031;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #d63031;
+        position: relative;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: white;
+        font-size: 1.1rem;
+        margin: 40px 0;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .login-form {
+          flex-direction: column;
+        }
+
+        .input-field {
+          width: 100%;
+        }
+
+        .games-grid,
+        .games-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // API Functions
+      const api = axios.create({
+        baseURL: "http://localhost:5000",
+      });
+
+      async function login({ email, password }) {
+        return api.post("/login", { email, password });
+      }
+
+      async function register({ username, email, password }) {
+        return api.post("/register", { username, email, password });
+      }
+
+      async function verifyToken(token) {
+        return api.get("/verify-token", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      async function fetchGames() {
+        return api.get("/games");
+      }
+
+      async function getFavorites(token) {
+        return api.get("/favorites", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      async function addFavorite(token, game) {
+        return api.post("/favorites", game, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      async function removeFavorite(token, gameId) {
+        return api.delete(`/favorites/${gameId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      // Components
+      function Header() {
+        return (
+          <div className="header">
+            <h1>🎮 GameHub</h1>
+            <p>Descubra e organize seus jogos favoritos</p>
+          </div>
+        );
+      }
+
+      function ErrorMessage({ message, onClose }) {
+        if (!message) return null;
+        return (
+          <div className="error-message">
+            {message}
+            <button
+              onClick={onClose}
+              style={{
+                float: "right",
+                background: "none",
+                border: "none",
+                fontSize: "18px",
+                cursor: "pointer",
+              }}
+            >
+              ×
+            </button>
+          </div>
+        );
+      }
+
+      function WelcomeMessage({ user, onLogout }) {
+        return (
+          <div className="welcome-message">
+            <span>Bem-vindo, {user.username}! </span>
+            <button
+              onClick={onLogout}
+              className="btn btn-danger"
+              style={{ marginLeft: "10px" }}
+            >
+              Sair
+            </button>
+          </div>
+        );
+      }
+
+      function AuthForm({
+        isLogin,
+        loginData,
+        setLoginData,
+        registerData,
+        setRegisterData,
+        onSwitchMode,
+        onSubmit,
+        loading,
+      }) {
+        return (
+          <div className="login-section">
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+              <button
+                className={`btn ${isLogin ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => onSwitchMode(true)}
+                style={{ marginRight: "10px" }}
+              >
+                Login
+              </button>
+              <button
+                className={`btn ${!isLogin ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => onSwitchMode(false)}
+              >
+                Cadastro
+              </button>
+            </div>
+
+            {isLogin ? (
+              <div className="login-form">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="input-field"
+                  value={loginData.email}
+                  onChange={(e) =>
+                    setLoginData({ ...loginData, email: e.target.value })
+                  }
+                />
+                <input
+                  type="password"
+                  placeholder="Senha"
+                  className="input-field"
+                  value={loginData.password}
+                  onChange={(e) =>
+                    setLoginData({ ...loginData, password: e.target.value })
+                  }
+                />
+                <button
+                  onClick={() => onSubmit(true)}
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? "Entrando..." : "Entrar"}
+                </button>
+              </div>
+            ) : (
+              <div className="login-form">
+                <input
+                  type="text"
+                  placeholder="Nome de usuário"
+                  className="input-field"
+                  value={registerData.username}
+                  onChange={(e) =>
+                    setRegisterData({
+                      ...registerData,
+                      username: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="input-field"
+                  value={registerData.email}
+                  onChange={(e) =>
+                    setRegisterData({ ...registerData, email: e.target.value })
+                  }
+                />
+                <input
+                  type="password"
+                  placeholder="Senha (min. 6 caracteres)"
+                  className="input-field"
+                  value={registerData.password}
+                  onChange={(e) =>
+                    setRegisterData({
+                      ...registerData,
+                      password: e.target.value,
+                    })
+                  }
+                />
+                <button
+                  onClick={() => onSubmit(false)}
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? "Cadastrando..." : "Cadastrar"}
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function GameCard({
+        game,
+        token,
+        onAddFavorite,
+        onRemoveFavorite,
+        isFavorited,
+      }) {
+        return (
+          <div className="game-card">
+            {game.thumbnail && (
+              <img
+                src={game.thumbnail}
+                alt={game.title}
+                style={{
+                  width: "100%",
+                  height: "150px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  marginBottom: "15px",
+                }}
+              />
+            )}
+            <h3 className="game-title">{game.title}</h3>
+            <p className="game-description">{game.short_description}</p>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                flexWrap: "wrap",
+                marginBottom: "15px",
+              }}
+            >
+              {game.genre && (
+                <span
+                  style={{
+                    padding: "4px 8px",
+                    background: "#e9ecef",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {game.genre}
+                </span>
+              )}
+              {game.platform && (
+                <span
+                  style={{
+                    padding: "4px 8px",
+                    background: "#e9ecef",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {game.platform}
+                </span>
+              )}
+              {game.addedAt && (
+                <span
+                  style={{
+                    padding: "4px 8px",
+                    background: "#d4edda",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  Adicionado:{" "}
+                  {new Date(game.addedAt).toLocaleDateString("pt-BR")}
+                </span>
+              )}
+            </div>
+            {token && (
+              <div style={{ display: "flex", gap: "10px" }}>
+                {!isFavorited ? (
+                  <button
+                    onClick={() => onAddFavorite(game)}
+                    className="btn btn-success"
+                  >
+                    ⭐ Favoritar
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => onRemoveFavorite(game.id)}
+                    className="btn btn-danger"
+                  >
+                    💔 Remover
+                  </button>
+                )}
+                {game.game_url && (
+                  <a
+                    href={game.game_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ textDecoration: "none" }}
+                  >
+                    🎮 Jogar
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function GamesList({
+        games,
+        token,
+        favorites,
+        onAddFavorite,
+        onRemoveFavorite,
+      }) {
+        const isGameFavorited = (gameId) => {
+          return favorites.some(
+            (fav) => fav.id.toString() === gameId.toString()
+          );
+        };
+
+        if (games.length === 0) {
+          return <div className="empty-state">Nenhum jogo disponível.</div>;
+        }
+
+        return (
+          <div className="games-container">
+            {games.map((game) => (
+              <GameCard
+                key={game.id}
+                game={game}
+                token={token}
+                onAddFavorite={onAddFavorite}
+                onRemoveFavorite={onRemoveFavorite}
+                isFavorited={isGameFavorited(game.id)}
+              />
+            ))}
+          </div>
+        );
+      }
+
+      function Favorites({ favorites, token, onRemoveFavorite }) {
+        if (favorites.length === 0) {
+          return (
+            <div className="empty-state">Nenhum jogo favoritado ainda.</div>
+          );
+        }
+
+        return (
+          <div className="games-container">
+            {favorites.map((game) => (
+              <GameCard
+                key={game.id}
+                game={game}
+                token={token}
+                isFavorited={true}
+                onRemoveFavorite={onRemoveFavorite}
+                
+              />
+            ))}
+          </div>
+        );
+      }
+
+      // Main App Component
+      function App() {
+        const [loading, setLoading] = useState(false);
+        const [isLogin, setIsLogin] = useState(true);
+
+        const [loginData, setLoginData] = useState({ email: "", password: "" });
+        const [registerData, setRegisterData] = useState({
+          username: "",
+          email: "",
+          password: "",
+        });
+
+        const [error, setError] = useState("");
+        const [user, setUser] = useState(null);
+        const [token, setToken] = useState(null);
+
+        const [games, setGames] = useState([]);
+        const [favorites, setFavorites] = useState([]);
+
+        // Verifica token no localStorage
+        useEffect(() => {
+          const storedToken = localStorage.getItem("token");
+          if (storedToken) {
+            setToken(storedToken);
+            verifyToken(storedToken)
+              .then((res) => {
+                if (res.data && res.data.user) {
+                  setUser(res.data.user);
+                  fetchUserFavorites(storedToken);
+                  loadGames();
+                } else {
+                  logout();
+                }
+              })
+              .catch(() => logout());
+          }
+        }, []);
+
+        function logout() {
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem("token");
+          setFavorites([]);
+          setGames([]);
+        }
+
+        async function loadGames() {
+          try {
+            const res = await fetchGames();
+            setGames(res.data);
+          } catch {
+            setError("Falha ao carregar jogos.");
+          }
+        }
+
+        async function fetchUserFavorites(token) {
+          try {
+            const res = await getFavorites(token);
+            setFavorites(res.data || []);
+          } catch {
+            setError("Falha ao carregar favoritos.");
+          }
+        }
+
+        async function handleLoginOrRegister(loginMode) {
+          setLoading(true);
+          setError("");
+          try {
+            if (loginMode) {
+              // Login
+              const res = await login(loginData);
+              setUser(res.data.user);
+              setToken(res.data.token);
+              localStorage.setItem("token", res.data.token);
+              fetchUserFavorites(res.data.token);
+              loadGames();
+            } else {
+              // Register
+              const res = await register(registerData);
+              setUser(res.data.user);
+              setToken(res.data.token);
+              localStorage.setItem("token", res.data.token);
+              fetchUserFavorites(res.data.token);
+              loadGames();
+            }
+          } catch (err) {
+            setError(
+              err.response?.data?.message ||
+                "Erro ao autenticar. Tente novamente."
+            );
+          } finally {
+            setLoading(false);
+          }
+        }
+
+        async function handleAddFavorite(game) {
+          try {
+            await addFavorite(token, game);
+            setFavorites((prev) => [
+              ...prev,
+              { ...game, addedAt: new Date().toISOString() },
+            ]);
+          } catch {
+            setError("Erro ao adicionar favorito.");
+          }
+        }
+
+        async function handleRemoveFavorite(gameId) {
+          try {
+            await removeFavorite(token, gameId);
+            setFavorites((prev) => prev.filter((fav) => fav.id !== gameId));
+          } catch {
+            setError("Erro ao remover favorito.");
+          }
+        }
+
+        return (
+          <div className="container">
+            <Header />
+            <ErrorMessage message={error} onClose={() => setError("")} />
+            {!user ? (
+              <AuthForm
+                isLogin={isLogin}
+                loginData={loginData}
+                setLoginData={setLoginData}
+                registerData={registerData}
+                setRegisterData={setRegisterData}
+                onSwitchMode={setIsLogin}
+                onSubmit={handleLoginOrRegister}
+                loading={loading}
+              />
+            ) : (
+              <>
+                <WelcomeMessage user={user} onLogout={logout} />
+                <h2 className="section-title">Seus favoritos</h2>
+                <Favorites
+                  favorites={favorites}
+                  token={token}
+                  onRemoveFavorite={handleRemoveFavorite}
+                />
+                <h2 className="section-title">Todos os jogos</h2>
+                <GamesList
+                  games={games}
+                  token={token}
+                  favorites={favorites}
+                  onAddFavorite={handleAddFavorite}
+                  onRemoveFavorite={handleRemoveFavorite}
+                />
+              </>
+            )}
+          </div>
+        );
+      }
+
+      // Render the app
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
