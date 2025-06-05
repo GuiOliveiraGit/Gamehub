@@ -17,8 +17,12 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // ✅ Use apenas essa linha
 app.use(express.json({ limit: '10mb' }));
+
+app.get('/', (req, res) => {
+  res.send('API está funcionando!');
+});
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
