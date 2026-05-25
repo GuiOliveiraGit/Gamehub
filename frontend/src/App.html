@@ -240,37 +240,37 @@
       });
 
       async function login({ email, password }) {
-        return api.post("/login", { email, password });
+        return api.post("/api/auth/login", { email, password });
       }
 
       async function register({ username, email, password }) {
-        return api.post("/register", { username, email, password });
+        return api.post("/api/auth/register", { username, email, password });
       }
 
       async function verifyToken(token) {
-        return api.get("/verify-token", {
+        return api.get("/api/auth/verify", {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
 
       async function fetchGames() {
-        return api.get("/games");
+        return api.get("/api/games");
       }
 
       async function getFavorites(token) {
-        return api.get("/favorites", {
+        return api.get("/api/favorites", {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
 
       async function addFavorite(token, game) {
-        return api.post("/favorites", game, {
+        return api.post("/api/favorites", game, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
 
       async function removeFavorite(token, gameId) {
-        return api.delete(`/favorites/${gameId}`, {
+        return api.delete(`/api/favorites/${gameId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
@@ -634,7 +634,7 @@
         async function loadGames() {
           try {
             const res = await fetchGames();
-            setGames(res.data);
+            setGames(res.data.games || []);
           } catch {
             setError("Falha ao carregar jogos.");
           }
@@ -643,7 +643,7 @@
         async function fetchUserFavorites(token) {
           try {
             const res = await getFavorites(token);
-            setFavorites(res.data || []);
+            setFavorites(res.data.favorites || []);
           } catch {
             setError("Falha ao carregar favoritos.");
           }

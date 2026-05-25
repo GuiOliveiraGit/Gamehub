@@ -5,15 +5,26 @@ import cors from 'cors';
 
 import authRoutes from './routes/auth.js';
 import favoriteRoutes from './routes/favorites.js';
+import gameRoutes from './routes/games.js';
 
 dotenv.config();
 
 const app = express();
 
+const allowedOrigins =
+  process.env.NODE_ENV === 'production'
+    ? ['https://seu-dominio.com']
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'null'];
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://seu-dominio.com'
-    : 'http://localhost:3000',
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`Origem não permitida pelo CORS: ${origin}`));
+  },
   credentials: true,
 };
 
@@ -31,6 +42,7 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/favorites', favoriteRoutes);
+app.use('/api/games', gameRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
@@ -45,23 +57,28 @@ app.use('*', (req, res) => {
 });
 
 const connectDB = async () => {
+  if (!process.env.MONGO_URI) {
+    console.warn('MONGO_URI não configurada. Login e favoritos ficarão indisponíveis.');
+    return;
+  }
+
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Conectado ao MongoDB');
   } catch (error) {
     console.error('Erro ao conectar ao MongoDB:', error.message);
-    process.exit(1);
   }
 };
 
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
-  await connectDB();
   app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
     console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
   });
+
+  connectDB();
 };
 
 startServer().catch((error) => {
