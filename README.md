@@ -138,4 +138,4 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 Guilherme - Guilherme.oliveira0@outlook.com.br
 
-Link do Projeto: [https://github.com/seu-usuario/gamehub](https://github.com/GuiOliveiraGit/Gamehub/)
+Link do Projeto: [https://github.com/GuiOliveiraGit/gamehub](https://github.com/GuiOliveiraGit/Gamehub/)
