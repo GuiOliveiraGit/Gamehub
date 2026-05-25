@@ -136,6 +136,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 📞 Contato
 
-Seu Nome - [seu-email@email.com](mailto:seu-email@email.com)
+Guilherme - Guilherme.oliveira0@outlook.com.br
 
-Link do Projeto: [https://github.com/seu-usuario/gamehub](https://github.com/seu-usuario/gamehub)
+Link do Projeto: [https://github.com/seu-usuario/gamehub](https://github.com/GuiOliveiraGit/Gamehub/)
